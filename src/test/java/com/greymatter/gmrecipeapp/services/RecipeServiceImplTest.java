@@ -4,6 +4,7 @@ import com.greymatter.gmrecipeapp.converters.RecipeCommandToRecipe;
 import com.greymatter.gmrecipeapp.converters.RecipeToRecipeCommand;
 import com.greymatter.gmrecipeapp.domain.Recipe;
 import com.greymatter.gmrecipeapp.repositories.RecipeRepository;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -64,5 +65,12 @@ class RecipeServiceImplTest {
         assertEquals(recipes.size(), 1);
         verify(recipeRepository, times(1)).findAll();
         verify(recipeRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    public void testDeleteById() throws Exception{
+        Long idToDelete = Long.valueOf(2L);
+        recipeService.deleteById(idToDelete);
+        verify(recipeRepository, times(1)).deleteById(anyLong());
     }
 }
