@@ -1,6 +1,8 @@
 package com.greymatter.gmrecipeapp.controllers;
 
 import com.greymatter.gmrecipeapp.commands.IngredientCommand;
+import com.greymatter.gmrecipeapp.commands.RecipeCommand;
+import com.greymatter.gmrecipeapp.commands.UnitOfMeasureCommand;
 import com.greymatter.gmrecipeapp.services.IngredientService;
 import com.greymatter.gmrecipeapp.services.RecipeService;
 import com.greymatter.gmrecipeapp.services.UnitOfMeasureService;
@@ -61,4 +63,26 @@ public class IngredientController {
 
         return "redirect:/recipe/" + savedCommand.getRecipeId() + "/ingredient/" + savedCommand.getId() + "/show";
     }
+
+    @GetMapping
+    @RequestMapping("recipe/{recipeId}/ingredient/new")
+    public String newIngredient(@PathVariable String recipeId, Model model){
+
+        //make sure we have a good id value
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(recipeId));
+        //todo raise exception if null
+
+        //need to return back parent id for hidden form property
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(Long.valueOf(recipeId));
+        model.addAttribute("ingredient", ingredientCommand);
+
+        //init uom
+        ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
+
+        model.addAttribute("uomList",  unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredientform";
+    }
+
 }
