@@ -2,6 +2,7 @@ package com.greymatter.gmrecipeapp.controllers;
 
 import com.greymatter.gmrecipeapp.commands.RecipeCommand;
 import com.greymatter.gmrecipeapp.domain.Recipe;
+import com.greymatter.gmrecipeapp.exceptions.NotFoundException;
 import com.greymatter.gmrecipeapp.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,5 +93,15 @@ class RecipeControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/"));
 
         verify(recipeService, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.view().name("404error"));
     }
 }
