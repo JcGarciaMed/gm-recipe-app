@@ -3,8 +3,10 @@ package com.greymatter.gmrecipeapp.services;
 import com.greymatter.gmrecipeapp.converters.RecipeCommandToRecipe;
 import com.greymatter.gmrecipeapp.converters.RecipeToRecipeCommand;
 import com.greymatter.gmrecipeapp.domain.Recipe;
+import com.greymatter.gmrecipeapp.exceptions.NotFoundException;
 import com.greymatter.gmrecipeapp.repositories.RecipeRepository;
-import lombok.extern.java.Log;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -72,5 +74,14 @@ class RecipeServiceImplTest {
         Long idToDelete = Long.valueOf(2L);
         recipeService.deleteById(idToDelete);
         verify(recipeRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void getRecipeByIdTestNotFound() throws Exception {
+        Assertions.assertThrows(NotFoundException.class, () -> {
+                  Optional<Recipe> recipeOptional = Optional.empty();
+                    when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+                    Recipe recipeReturned = recipeService.findById(1L);
+                });
     }
 }
